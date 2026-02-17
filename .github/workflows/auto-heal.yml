@@ -12,16 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Analyze failure logs
-        run: |
-          echo "Analyzing failures..."
-          echo "AI could suggest fixes here."
-
-      - name: Create issue with failure details
+      - name: Create failure issue
         uses: peter-evans/create-issue-from-file@v5
         with:
-          title: "Auto-heal detected test failure"
+          title: "Agentic tests failure detected"
           content-filepath: README.md

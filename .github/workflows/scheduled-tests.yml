@@ -2,7 +2,7 @@ name: Nightly Regression
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # todo dia 03:00 UTC
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -22,14 +22,24 @@ jobs:
         working-directory: target-app
         run: docker compose -f docker-compose.e2e.yml up -d --build
 
-      - name: Wait services
+      - name: Wait backend
         run: |
-          sleep 10
-          curl http://localhost:3001
+          for i in {1..10}; do
+            if curl -s http://localhost:3001; then exit 0; fi
+            sleep 5
+          done
+          exit 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Run tests
-        working-directory: target-app
-        run: npx playwright test
+        working-directory: target-app/e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps
+          npx playwright test
 
       - name: Stop containers
         if: always()

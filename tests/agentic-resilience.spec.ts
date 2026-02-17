@@ -17,7 +17,7 @@ test.describe('Resiliência Agêntica (Self-Healing)', () => {
     
     await ai.smartClick(seletorQuebrado);
 
-    await expect(page.locator('.cart-count')).not.toBe('0');
+    await expect(page.locator('.cart-count')).not.toHaveText('0');
     
     console.log('--- Teste Finalizado com Sucesso ---');
   });
