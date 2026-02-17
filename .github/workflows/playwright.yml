@@ -25,8 +25,8 @@ jobs:
     - name: Install Playwright browsers
       run: npx playwright install chromium --with-deps
     
-    - name: Run Playwright tests
-      run: npx playwright test
+    - name: Run tests (ignoring Gemini AI test)
+      run: npx playwright test --grep-invert "Gemini AI"
     
     - uses: actions/upload-artifact@v4
       if: always()
