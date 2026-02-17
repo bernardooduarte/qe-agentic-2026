@@ -1,0 +1,37 @@
+name: Nightly Regression
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # todo dia 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout target app
+        uses: actions/checkout@v4
+        with:
+          repository: bernardooduarte/fullstack-e2e-playwright-example
+          path: target-app
+
+      - name: Start containers
+        working-directory: target-app
+        run: docker compose -f docker-compose.e2e.yml up -d --build
+
+      - name: Wait services
+        run: |
+          sleep 10
+          curl http://localhost:3001
+
+      - name: Run tests
+        working-directory: target-app
+        run: npx playwright test
+
+      - name: Stop containers
+        if: always()
+        working-directory: target-app
+        run: docker compose -f docker-compose.e2e.yml down
